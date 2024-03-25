@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Calc
       Lib
   other-modules:
       Paths_gtk_gui
