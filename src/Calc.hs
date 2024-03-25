@@ -1,8 +1,13 @@
 module Calc
     ( Value (..)
+    , Action (..)
     , renderValue
+    , enterDot
+    , enterDigit
+    , backspace
+    , operator
+    , equals
     ) where
-
 data Value = Value String (Maybe Action)
 
 data Action
@@ -38,3 +43,52 @@ renderValue (Value x action) =
     f l = " " ++ l ++ " "
     g "" = "0"
     g xs = reverse xs
+
+enterDot :: Value -> Value
+enterDot (Value x action) =
+  let f xs = if '.' `elem` xs then xs else '.' : xs
+  in case action of
+    Nothing -> Value (f x) Nothing
+    Just a -> Value x (Just $ mapAction f a)
+
+enterDigit :: Char -> Value -> Value
+enterDigit ch (Value x action) =
+  case action of
+    Nothing -> Value (ch:x) Nothing
+    Just a -> Value x (Just $ mapAction (ch:) a)
+
+backspace :: Value -> Value
+backspace (Value x action) =
+  case action of
+    Nothing -> Value (drop 1 x) Nothing
+    Just a -> Value x (Just $ mapAction (drop 1) a)
+
+operator :: (String -> Action) -> Value -> Value
+operator op value =
+  let (Value x action) = equals value
+  in Value x $ Just $
+    case action of
+      Nothing -> op ""
+      Just a -> op (getSndArg a)
+
+equals :: Value -> Value
+equals (Value x action) =
+  case action of
+    Nothing -> Value x Nothing
+    Just a ->
+      if null (getSndArg a)
+        then Value x action
+        else Value result Nothing
+          where
+            g :: String -> Double
+            g "" = 0
+            g ('.':xs) = g ('0':'.':xs)
+            g xs = read (reverse xs)
+            x' = g x
+            y' = g (getSndArg a)
+            result = reverse . show $
+              case a of
+                Addition _ -> x' + y'
+                Subtraction _ -> x' - y'
+                Multiplication _ -> x' * y'
+                Division _ -> x' / y'

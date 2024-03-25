@@ -26,29 +26,29 @@ someFunc = do
   mkBtn "MS"  id >>= attach 2 1 1 1
   mkBtn "M+"  id >>= attach 3 1 1 1
   mkBtn "M–"  id >>= attach 4 1 1 1
-  mkBtn "←"   id >>= attach 0 2 1 1
+  mkBtn "←"   backspace >>= attach 0 2 1 1
   mkBtn "CE"  id >>= attach 1 2 1 1
   mkBtn "C"   id >>= attach 2 2 1 1
   mkBtn "±"   id >>= attach 3 2 1 1
   mkBtn "√"   id >>= attach 4 2 1 1
-  mkBtn "7"   id >>= attach 0 3 1 1
-  mkBtn "8"   id >>= attach 1 3 1 1
-  mkBtn "9"   id >>= attach 2 3 1 1
-  mkBtn "÷"   id >>= attach 3 3 1 1
+  mkBtn "7"   (enterDigit '7') >>= attach 0 3 1 1
+  mkBtn "8"   (enterDigit '8') >>= attach 1 3 1 1
+  mkBtn "9"   (enterDigit '9') >>= attach 2 3 1 1
+  mkBtn "÷"   (operator Division) >>= attach 3 3 1 1
   mkBtn "%"   id >>= attach 4 3 1 1
-  mkBtn "4"   id >>= attach 0 4 1 1
-  mkBtn "5"   id >>= attach 1 4 1 1
-  mkBtn "6"   id >>= attach 2 4 1 1
-  mkBtn "*"   id >>= attach 3 4 1 1
+  mkBtn "4"   (enterDigit '4') >>= attach 0 4 1 1
+  mkBtn "5"   (enterDigit '5') >>= attach 1 4 1 1
+  mkBtn "6"   (enterDigit '6') >>= attach 2 4 1 1
+  mkBtn "*"   (operator Multiplication) >>= attach 3 4 1 1
   mkBtn "1/x" id >>= attach 4 4 1 1
-  mkBtn "1"   id >>= attach 0 5 1 1
-  mkBtn "2"   id >>= attach 1 5 1 1
-  mkBtn "3"   id >>= attach 2 5 1 1
-  mkBtn "–"   id >>= attach 3 5 1 1
-  mkBtn "="   id >>= attach 4 5 1 2
-  mkBtn "0"   id >>= attach 0 6 2 1
-  mkBtn "."   id >>= attach 2 6 1 1
-  mkBtn "+"   id >>= attach 3 6 1 1
+  mkBtn "1"   (enterDigit '1') >>= attach 0 5 1 1
+  mkBtn "2"   (enterDigit '2') >>= attach 1 5 1 1
+  mkBtn "3"   (enterDigit '3') >>= attach 2 5 1 1
+  mkBtn "–"   (operator Subtraction) >>= attach 3 5 1 1
+  mkBtn "="   equals >>= attach 4 5 1 2
+  mkBtn "0"   (enterDigit '0') >>= attach 0 6 2 1
+  mkBtn "."   enterDot >>= attach 2 6 1 1
+  mkBtn "+"   (operator Addition) >>= attach 3 6 1 1
   containerAdd window grid
   window `on` deleteEvent $ do -- handler to run on window destruction
     liftIO mainQuit
