@@ -17,35 +17,38 @@ someFunc = do
   gridSetRowHomogeneous grid True
   let attach x y w h item = gridAttach grid item x y w h
   attach 0 0 5 1 display
-  mkBtn "MC"  >>= attach 0 1 1 1
-  mkBtn "MR"  >>= attach 1 1 1 1
-  mkBtn "MS"  >>= attach 2 1 1 1
-  mkBtn "M+"  >>= attach 3 1 1 1
-  mkBtn "M–"  >>= attach 4 1 1 1
-  mkBtn "←"   >>= attach 0 2 1 1
-  mkBtn "CE"  >>= attach 1 2 1 1
-  mkBtn "C"   >>= attach 2 2 1 1
-  mkBtn "±"   >>= attach 3 2 1 1
-  mkBtn "√"   >>= attach 4 2 1 1
-  mkBtn "7"   >>= attach 0 3 1 1
-  mkBtn "8"   >>= attach 1 3 1 1
-  mkBtn "9"   >>= attach 2 3 1 1
-  mkBtn "÷"   >>= attach 3 3 1 1
-  mkBtn "%"   >>= attach 4 3 1 1
-  mkBtn "4"   >>= attach 0 4 1 1
-  mkBtn "5"   >>= attach 1 4 1 1
-  mkBtn "6"   >>= attach 2 4 1 1
-  mkBtn "*"   >>= attach 3 4 1 1
-  mkBtn "1/x" >>= attach 4 4 1 1
-  mkBtn "1"   >>= attach 0 5 1 1
-  mkBtn "2"   >>= attach 1 5 1 1
-  mkBtn "3"   >>= attach 2 5 1 1
-  mkBtn "–"   >>= attach 3 5 1 1
-  mkBtn "="   >>= attach 4 5 1 2
-  mkBtn "0"   >>= attach 0 6 2 1
-  mkBtn "."   >>= attach 2 6 1 1
-  mkBtn "+"   >>= attach 3 6 1 1
+  mkBtn "MC"  display >>= attach 0 1 1 1
+  mkBtn "MR"  display >>= attach 1 1 1 1
+  mkBtn "MS"  display >>= attach 2 1 1 1
+  mkBtn "M+"  display >>= attach 3 1 1 1
+  mkBtn "M–"  display >>= attach 4 1 1 1
+  mkBtn "←"   display >>= attach 0 2 1 1
+  mkBtn "CE"  display >>= attach 1 2 1 1
+  mkBtn "C"   display >>= attach 2 2 1 1
+  mkBtn "±"   display >>= attach 3 2 1 1
+  mkBtn "√"   display >>= attach 4 2 1 1
+  mkBtn "7"   display >>= attach 0 3 1 1
+  mkBtn "8"   display >>= attach 1 3 1 1
+  mkBtn "9"   display >>= attach 2 3 1 1
+  mkBtn "÷"   display >>= attach 3 3 1 1
+  mkBtn "%"   display >>= attach 4 3 1 1
+  mkBtn "4"   display >>= attach 0 4 1 1
+  mkBtn "5"   display >>= attach 1 4 1 1
+  mkBtn "6"   display >>= attach 2 4 1 1
+  mkBtn "*"   display >>= attach 3 4 1 1
+  mkBtn "1/x" display >>= attach 4 4 1 1
+  mkBtn "1"   display >>= attach 0 5 1 1
+  mkBtn "2"   display >>= attach 1 5 1 1
+  mkBtn "3"   display >>= attach 2 5 1 1
+  mkBtn "–"   display >>= attach 3 5 1 1
+  mkBtn "="   display >>= attach 4 5 1 2
+  mkBtn "0"   display >>= attach 0 6 2 1
+  mkBtn "."   display >>= attach 2 6 1 1
+  mkBtn "+"   display >>= attach 3 6 1 1
   containerAdd window grid
+  window `on` deleteEvent $ do -- handler to run on window destruction
+    liftIO mainQuit
+    return False
 
   widgetShowAll window
   mainGUI
@@ -67,8 +70,10 @@ renderDisplay = do
               , entryText := "0" ]
   pure display
 
-mkBtn :: String -> IO Button
-mkBtn label = do
+mkBtn :: String -> Entry -> IO Button
+mkBtn label display = do
   btn <- buttonNew
   set btn [ buttonLabel := label ]
+  btn `on` buttonActivated $
+    set display [ entryText := label ]
   return btn
